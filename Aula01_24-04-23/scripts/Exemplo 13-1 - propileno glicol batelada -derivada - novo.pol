@@ -1,0 +1,97 @@
+No Title  |POLVER05_0 |1
+# Exemplo 13.1-produção de propileno glicol
+
+# ##################################REAÇÃO###########################################
+
+# Reação óxido de propileno + água -> propileno glicol (ácido sulfúrico catalisador 1wt%)
+# Utilizado um inerte (metanol) para preparação da solução de óxido de propileno
+# Nomenclatura para a solução
+# A - Óxido de propileno; B - água, C - propileno glicol e I - metanol (inerte)
+# lei de velocidade -ra = k * Ca
+# k = 16.96 * 10 ^ 12 * exp(-32400 / (R * T)) # h-1
+
+# ##################################PROPRIEDADE DAS ESPÉCIES NO SISTEMA#############
+
+# 1. Capacidade calorífica ou calor específico (btu/(lbmol*ºF)
+Cpa = 35
+Cpb = 18
+Cpc = 46
+Cpi = 19.5
+
+# 2. Entalpia de formação na TR= 528°R (btu/(lbmol)
+Ha = -66000
+Hb = -123000
+Hc = -226000
+TR = 528 # ºR
+
+# ##################################REATOR-CONDIÇÕES##############################
+
+# 1. Reator batelada adiabático
+# 2. Temperatura de alimentação da solução 1(óxido +metanol) e solução 2 (água+ácido sulfúrico)
+T0 = 534.67 # ºR (75ºF)
+# 3. thetas
+theta_a = 1
+theta_b = 18.65
+theta_c = 0
+theta_i = 1.67
+# ##########################Balanço molar no reator batelada adiabático ############
+
+# 1. Equação Na0 * (dX/dt)=-ra*V, lembrando Ca0=Na0/V0, dX/dt=-ra/Ca0
+d(X)/d(t) = -ra / Ca0 # equação diferencial de primeira ordem
+X(0) = 0 # condição inicial X no tempo zero = 0
+# 2. Lei de velocidade - ra= k.Ca
+ra = -k * Ca
+k = 16.96 * 10 ^ 12 * exp(-32400 / (R * T)) # h-1
+R = 1.987 # btu/(lbmol*ºR)
+# 3. Estequiometria, aA+bB ->cC, limitante é o A, reação em fase líquida, V=V0, Na=Na0(1-X), Ca=Ca0*(1-X)
+Ca = Ca0 * (1 - X)
+a = 1
+b = 1
+c = 1
+# ##Ca0
+Ca0 = 0.13 # lbmol/ft3 precisamos descobrir  do exemplo CSTR 0.132 lbmol/ft³
+
+# ##################################Balanço de energia no reator batelada adiabático ############
+# 1. Equação dT/dt=( (-deltaHreacao)*(-rA)*V)/(Nao*(soma_thetai_Cpi+soma_Cpi*X))
+
+# #dT/dt=( (-deltaHreacao)*(-rA)*V)/(Nao*(soma_thetai_Cpi+soma_Cpi*X)) combinado que Ca0=Na0/V...#
+# logo V/Na0=1/Ca0... o balanço de energia torna-se:
+# #d(T)/d(t) = (-deltaHrx* -ra) /(Ca0* (soma_thetai_Cpi+soma_Cpi*X))
+
+# ###Calculando
+# deltaHreacao=deltaHdeformação(TR)+deltaCp*(T-TR) chamaremos de deltaHrx
+# deltaHdeformação chamaremos de dH0 = (c/a*Hºc)-(b/a*Hºb)-Ha
+dH0 = ((c / a) * Hc) - ((b / a) * Hb) - (Ha)
+# deltaCp chamaremos de dCp
+dCp = (c/a) * Cpc - (b / a) * Cpb - Cpa
+# Combinando as informações para o deltaHreacao
+deltaHrx = dH0 + dCp * (T - TR)
+# soma_theta_i_Cpi  chamaremos de ThetaCp=(theta_a*Cpa)+(theta_b*Cpb)+(theta_c*Cpc)+(theta_i*Cpi)
+ThetaCp = (theta_a * Cpa) + (theta_b * Cpb) + (theta_c * Cpc) + (theta_i * Cpi)
+# combinando tudo no balanço de energia
+d(T)/d(t) = ((-deltaHrx) * (-ra)) / (Ca0 * (ThetaCp + dCp * X))
+T(0) = 534.67 # ºR
+# ##############Resolvendo os dois balanços###############################################
+# 1. Precisamos definir um intervalo de integração para a solução numérica (método RKF45)
+t(0) = 0
+t(f) = 1 # horas
+# 2. A solução numérica gerada fornece a T em Rankine, conforme equações...
+# # lembrando que a escala rankine é semelhante a escala kelvin (/°C=/ºK),
+# logo a variação na escala ºR é igual a variação na escala °F
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
